@@ -1,0 +1,33 @@
+meta {
+  name: Get N news
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/news/37
+  body: none
+  auth: none
+}
+
+tests {
+  test("Количество возвращенных в ответе записей соответствует количеству запрошенных в uri", function() {
+    const data = res.getBody();
+    // Получаем число запрошенных записей
+    let url = req.getUrl().match(/(\d+)(?!.*\d)/).map(Number);
+    // Считаем количество записей в ответе
+    let count = 0;
+  try {
+    data.forEach(data => {
+      if (data.ID) {
+        count++;
+      }
+    });
+  } catch (error) {
+    console.error('Ошибка при разборе JSON:', error);
+  }
+    // Проверка соответствия и вывод в cosole
+    console.log("count:", count, "uri:", url[0])
+    expect(count).to.equal(url[0])
+  });
+}
